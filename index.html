@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>⛏ Mini App Đào Vàng</title>
+
+  <!-- Telegram WebApp SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #f7d046, #ff9a00);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .app {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 16px;
+      width: 320px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+      text-align: center;
+    }
+    h1 {
+      margin-top: 0;
+    }
+    .gold {
+      font-size: 26px;
+      color: #d18b00;
+      font-weight: bold;
+      margin: 12px 0;
+    }
+    button {
+      background: #ffb703;
+      border: none;
+      padding: 12px 18px;
+      margin: 6px;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    button:hover {
+      background: #fb8500;
+      color: white;
+    }
+    .log {
+      margin-top: 10px;
+      height: 90px;
+      overflow-y: auto;
+      background: #f2f2f2;
+      padding: 6px;
+      border-radius: 8px;
+      font-size: 13px;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app">
+  <h1>⛏ Đào Vàng</h1>
+  <div class="gold" id="gold">0 vàng</div>
+
+  <button onclick="mine()">⛏ Đào</button>
+  <button onclick="redeem()">🎁 Đổi</button>
+
+  <div class="log" id="log"></div>
+</div>
+
+<script>
+  const tg = window.Telegram.WebApp;
+  tg.expand();
+
+  let gold = Number(localStorage.getItem("gold")) || 0;
+  updateGold();
+
+  function updateGold() {
+    document.getElementById("gold").innerText = gold + " vàng";
+    localStorage.setItem("gold", gold);
+  }
+
+  function log(text) {
+    const box = document.getElementById("log");
+    box.innerHTML = text + "<br>" + box.innerHTML;
+  }
+
+  function mine() {
+    const earn = Math.floor(Math.random() * 50) + 10;
+    gold += earn;
+    updateGold();
+    log("⛏ Bạn đào được " + earn + " vàng");
+  }
+
+  function redeem() {
+    if (gold >= 2000) {
+      gold -= 2000;
+      updateGold();
+      log("🎁 Đã đổi 2000 vàng → 1000 VNĐ (demo)");
+      alert("Đổi thành công! (demo)");
+    } else {
+      alert("❌ Chưa đủ 2000 vàng");
+    }
+  }
+</script>
+
+</body>
+</html>
