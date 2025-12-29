@@ -3,88 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GOLD MINER ULTIMATE</title>
+    <title>GOLD MINER PRO - @daovang51_bot</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root { --gold: #ffb703; --gold-dark: #fb8500; --bg: #0d1b2a; --card: #1b263b; --txt: #e0e1dd; }
         body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--txt); }
         
-        /* Hiệu ứng thông báo Server */
-        #server-status { position: fixed; top: 10px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); padding: 5px 15px; border-radius: 20px; font-size: 11px; z-index: 999; border: 1px solid var(--gold); display: none; }
+        #server-status { position: fixed; top: 15px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); padding: 8px 20px; border-radius: 30px; font-size: 11px; z-index: 1000; border: 1px solid var(--gold); color: var(--gold); display: none; }
         .dot { animation: blink 1s infinite; }
-        @keyframes blink { 0% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 0; } }
+        @keyframes blink { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
 
-        .header { background: linear-gradient(180deg, var(--card) 0%, var(--bg) 100%); padding: 20px; text-align: center; }
-        .gold-val { font-size: 38px; font-weight: 800; color: var(--gold); }
-        .content { padding: 15px; padding-bottom: 100px; }
-        .card { background: var(--card); border-radius: 20px; padding: 20px; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .header { background: linear-gradient(180deg, var(--card) 0%, var(--bg) 100%); padding: 25px 20px; text-align: center; }
+        .gold-val { font-size: 40px; font-weight: 900; color: var(--gold); text-shadow: 0 0 15px rgba(255,183,3,0.4); }
+        .content { padding: 15px; padding-bottom: 120px; }
+        .card { background: var(--card); border-radius: 20px; padding: 20px; margin-bottom: 15px; border: 1px solid #ffffff05; }
         
-        .prog-container { background: #000; height: 12px; border-radius: 10px; margin: 15px 0; overflow: hidden; }
-        .prog-bar { height: 100%; width: 0%; background: var(--gold); box-shadow: 0 0 10px var(--gold); }
+        /* Mining */
+        .setting-box { background: rgba(0,0,0,0.3); padding: 12px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .prog-container { background: #000; height: 16px; border-radius: 10px; margin: 20px 0; overflow: hidden; border: 1px solid #333; }
+        .prog-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--gold), #fff); box-shadow: 0 0 10px var(--gold); }
         
-        .btn-main { background: var(--gold); border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: bold; cursor: pointer; color: #000; }
-        .btn-main:disabled { background: #444; color: #888; }
+        /* Shop Items */
+        .shop-item { display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 15px; margin-bottom: 10px; border: 1px solid #ffffff05; }
+        .shop-info b { color: var(--gold); display: block; font-size: 16px; }
+        .shop-info span { font-size: 12px; color: #888; }
 
-        .nav { position: fixed; bottom: 0; width: 100%; display: flex; background: var(--card); border-top: 1px solid #333; }
-        .nav-item { flex: 1; text-align: center; padding: 15px; font-size: 11px; color: #888; }
-        .nav-item.active { color: var(--gold); border-top: 2px solid var(--gold); }
+        .btn-main { background: linear-gradient(135deg, var(--gold), var(--gold-dark)); border: none; padding: 16px; border-radius: 15px; width: 100%; font-weight: 800; cursor: pointer; color: #000; font-size: 16px; }
+        .btn-buy { background: var(--gold); border: none; padding: 8px 15px; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        .btn-buy:disabled { background: #444; color: #888; }
+        
+        input, select { width: 100%; padding: 14px; margin: 8px 0; border-radius: 12px; border: 1px solid #333; background: #000; color: #fff; box-sizing: border-box; }
+        
+        .nav { position: fixed; bottom: 0; width: 100%; display: flex; background: var(--card); border-top: 1px solid #333; padding-bottom: env(safe-area-inset-bottom); }
+        .nav-item { flex: 1; text-align: center; padding: 15px 5px; font-size: 10px; color: #64748b; font-weight: bold; }
+        .nav-item.active { color: var(--gold); border-top: 3px solid var(--gold); background: rgba(255,183,3,0.05); }
 
         .tab { display: none; }
-        .tab.active { display: block; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: none; background: #000; color: #fff; box-sizing: border-box; }
-        .ref-box { background: #00000030; padding: 15px; border-radius: 12px; border: 1px dashed var(--gold); margin-top: 10px; }
+        .tab.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
-<div id="server-status">Đang kết nối đến Server<span class="dot">...</span></div>
+<div id="server-status">Kết nối Server<span class="dot">...</span></div>
 
 <div class="header">
-    <div style="font-size: 12px; color: #888;" id="user-display">@Guest</div>
+    <div id="user-display" style="font-size: 12px; color: #888; margin-bottom: 5px;">@Guest</div>
     <div class="gold-val" id="gold-display">0</div>
 </div>
 
 <div class="content">
     <div id="tab-mine" class="tab active">
         <div class="card">
-            <div style="display: flex; justify-content: space-between; font-size: 13px;">
-                <label>Thời gian treo (Giây):</label>
-                <input type="number" id="duration" value="30" min="30" style="width: 60px; margin: 0; padding: 5px;">
+            <div class="setting-box">
+                <span style="font-size: 12px; font-weight: bold;">GIÂY TREO:</span>
+                <input type="number" id="duration" value="30" min="30" style="width: 70px; margin:0; padding:5px; text-align:center;">
             </div>
+            <div id="tool-name" style="text-align: center; font-size: 12px; color: var(--gold); font-weight: bold;">CUỐC GỖ</div>
             <div class="prog-container"><div class="prog-bar" id="prog"></div></div>
             <button class="btn-main" id="btn-mine" onclick="startMining()">⛏ BẮT ĐẦU ĐÀO</button>
-            <p id="tool-name" style="font-size: 12px; text-align: center; margin-top: 10px; color: var(--gold);"></p>
+        </div>
+    </div>
+
+    <div id="tab-shop" class="tab">
+        <div class="card">
+            <h3 style="margin-top:0">🛒 Cửa Hàng</h3>
+            <div class="shop-item">
+                <div class="shop-info"><b>Cuốc Sắt</b><span>Sản lượng: 40 vàng/s</span></div>
+                <button class="btn-buy" id="buy-1" onclick="buyTool(1, 50000)">50K</button>
+            </div>
+            <div class="shop-item">
+                <div class="shop-info"><b>Máy Khoan</b><span>Sản lượng: 120 vàng/s</span></div>
+                <button class="btn-buy" id="buy-2" onclick="buyTool(2, 200000)">200K</button>
+            </div>
         </div>
     </div>
 
     <div id="tab-friends" class="tab">
         <div class="card">
-            <h3>👥 Mời Bạn Bè</h3>
-            <p style="font-size: 13px;">Mời mỗi bạn bè tham gia nhận ngay <b style="color:var(--gold)">5,000 vàng</b>.</p>
-            <div class="ref-box">
-                <p style="font-size: 11px; margin: 0; color: #888;">Link mời của bạn:</p>
-                <p id="ref-link" style="font-size: 12px; color: var(--gold); word-break: break-all; font-weight: bold;"></p>
-                <button onclick="copyRef()" style="background: var(--gold); border: none; padding: 5px 10px; border-radius: 5px; font-weight: bold; font-size: 11px;">COPY LINK</button>
-            </div>
-            <p style="font-size: 12px; margin-top: 15px;">Bạn đã mời: <span id="ref-count" style="color:var(--gold)">0</span> người</p>
+            <h3 style="margin-top:0">👥 Bạn Bè</h3>
+            <p style="font-size: 12px; color: #aaa;">Mời bạn nhận <b style="color:var(--gold)">5,000 vàng</b>.</p>
+            <div id="ref-link" style="background:#000; padding:10px; border-radius:10px; border:1px dashed var(--gold); font-size:11px; color:var(--gold); word-break:break-all; margin-bottom:10px;"></div>
+            <button class="btn-main" style="padding:10px" onclick="copyRef()">COPY LINK</button>
+            <p style="font-size: 13px; margin-top: 15px;">Số người đã mời: <span id="ref-count" style="color:var(--gold)">0</span></p>
         </div>
     </div>
 
     <div id="tab-wallet" class="tab">
         <div class="card">
-            <h3>Rút Tiền</h3>
-            <input type="text" id="wd-info" placeholder="Số Momo / STK + Tên">
+            <h3 style="margin-top:0">💰 Rút Tiền</h3>
+            <select id="wd-method" onchange="toggleWd()">
+                <option value="Momo">Ví Momo</option>
+                <option value="Bank">Ngân hàng (ATM)</option>
+            </select>
+            <div id="momo-fields"><input type="text" id="momo-num" placeholder="Số Momo"></div>
+            <div id="bank-fields" style="display:none">
+                <input type="text" id="bank-name" placeholder="Tên Ngân hàng">
+                <input type="text" id="bank-num" placeholder="Số tài khoản">
+            </div>
+            <input type="text" id="acc-name" placeholder="Tên chủ tài khoản (VIẾT HOA)">
             <button class="btn-main" onclick="requestWithdraw()">RÚT 20,000 VÀNG</button>
         </div>
-        <div class="card" id="history-list" style="font-size: 12px;">
-            <h4>📜 Lịch sử</h4>
-            <div style="color: #666;">Chưa có dữ liệu giao dịch</div>
-        </div>
+        <div class="card"><h4 style="margin:0">📜 Lịch sử</h4><div id="history-list" style="font-size:11px; margin-top:10px;">Đang tải...</div></div>
     </div>
 </div>
 
 <div class="nav">
     <div class="nav-item active" onclick="showTab('mine', this)">⛏ ĐÀO</div>
+    <div class="nav-item" onclick="showTab('shop', this)">🛒 SHOP</div>
     <div class="nav-item" onclick="showTab('friends', this)">👥 BẠN BÈ</div>
     <div class="nav-item" onclick="showTab('wallet', this)">💰 VÍ</div>
 </div>
@@ -92,63 +118,62 @@
 <script>
     const tg = window.Telegram.WebApp;
     tg.expand();
-    const SCRIPT_URL = "DÁN_LINK_WEB_APP_MỚI_CỦA_BẠN";
-    
-    // Tự động lấy RefBy từ link start của Telegram
-    const urlParams = new URLSearchParams(window.location.search);
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwi5oG87Gsd2PQMVhiQLVnYX6pWEP3DEMXzgro8vea9DfDqbXV4dagMiNmkWyOuAavk/exec";
+    const BOT_USER = "daovang51_bot";
+
+    const userId = tg.initDataUnsafe?.user?.id || "dev_test";
+    const userName = tg.initDataUnsafe?.user?.username || "Guest";
     const refBy = tg.initDataUnsafe?.start_param || "";
 
     let gold = 0, level = 0, isMining = false;
-    const userId = tg.initDataUnsafe?.user?.id || "test_user";
-    const userName = tg.initDataUnsafe?.user?.username || "Guest";
+    const TOOLS = [{name:"CUỐC GỖ", power:10}, {name:"CUỐC SẮT", power:40}, {name:"MÁY KHOAN", power:120}];
 
-    const TOOLS = [{ name: "CUỐC GỖ", power: 10 }, { name: "CUỐC SẮT", power: 40 }, { name: "MÁY KHOAN", power: 120 }];
-
-    function notifyServer(text, isBlink = true) {
-        const status = document.getElementById('server-status');
-        status.style.display = 'block';
-        status.innerHTML = text + (isBlink ? '<span class="dot">...</span>' : '');
-        if(!isBlink) setTimeout(() => status.style.display = 'none', 3000);
+    function notify(text, blink=true) {
+        const s = document.getElementById('server-status');
+        s.style.display = 'block';
+        s.innerHTML = text + (blink ? '<span class="dot">...</span>' : '');
+        if(!blink) setTimeout(() => s.style.display='none', 3000);
     }
 
     async function loadData() {
-        notifyServer("Đang kết nối Server");
+        notify("Kết nối Server");
         try {
             const res = await fetch(`${SCRIPT_URL}?action=load&userId=${userId}`);
             const data = await res.json();
-            gold = parseInt(data.gold) || 0;
-            level = parseInt(data.level) || 0;
+            gold = data.gold; level = data.level;
             document.getElementById('ref-count').innerText = data.refCount || 0;
+            renderHistory(data.history);
             updateUI();
-            notifyServer("Kết nối thành công!", false);
-        } catch (e) {
-            notifyServer("Lỗi kết nối!", false);
-        }
+            notify("Thành công", false);
+        } catch (e) { notify("Lỗi kết nối", false); }
     }
 
     function updateUI() {
         document.getElementById('gold-display').innerText = gold.toLocaleString();
         document.getElementById('user-display').innerText = "@" + userName;
-        document.getElementById('tool-name').innerText = "Công cụ: " + TOOLS[level].name;
-        document.getElementById('ref-link').innerText = "https://t.me/BotCuaBan?start=" + userId; // Thay tên Bot bạn vào đây
+        document.getElementById('tool-name').innerText = "CÔNG CỤ: " + TOOLS[level].name;
+        document.getElementById('ref-link').innerText = `https://t.me/${BOT_USER}?start=${userId}`;
+        
+        // Khóa nút mua nếu đã sở hữu hoặc không đủ tiền
+        if(level >= 1) document.getElementById('buy-1').innerText = "SỞ HỮU", document.getElementById('buy-1').disabled = true;
+        if(level >= 2) document.getElementById('buy-2').innerText = "SỞ HỮU", document.getElementById('buy-2').disabled = true;
     }
 
     function startMining() {
-        if (isMining) return;
+        if(isMining) return;
         const dur = Math.max(30, parseInt(document.getElementById('duration').value) || 30);
         isMining = true;
         let elapsed = 0;
         document.getElementById('btn-mine').disabled = true;
-
         let timer = setInterval(() => {
             elapsed++;
-            document.getElementById('prog').style.width = (elapsed / dur) * 100 + "%";
-            if (elapsed >= dur) {
+            document.getElementById('prog').style.width = (elapsed/dur)*100+"%";
+            if(elapsed >= dur) {
                 clearInterval(timer);
-                gold += TOOLS[level].power * dur;
                 isMining = false;
                 document.getElementById('btn-mine').disabled = false;
                 document.getElementById('prog').style.width = "0%";
+                gold += TOOLS[level].power * dur;
                 updateUI();
                 saveData();
                 tg.HapticFeedback.notificationOccurred('success');
@@ -156,25 +181,40 @@
         }, 1000);
     }
 
+    function buyTool(idx, price) {
+        if(gold < price) return alert("Không đủ vàng!");
+        gold -= price;
+        level = idx;
+        updateUI();
+        saveData();
+        alert("Nâng cấp thành công!");
+    }
+
     function saveData() {
-        fetch(SCRIPT_URL, { 
-            method: "POST", 
-            mode: "no-cors", 
-            body: JSON.stringify({ action: "save", userId, gold, level, userName, refBy }) 
-        });
+        fetch(SCRIPT_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ action: "save", userId, gold, level, userName, refBy }) });
     }
 
-    function copyRef() {
-        const link = document.getElementById('ref-link').innerText;
-        const el = document.createElement('textarea');
-        el.value = link;
-        document.body.appendChild(el);
-        el.select();
-        document.execCommand('copy');
-        document.body.removeChild(el);
-        alert("Đã copy link mời!");
+    function toggleWd() {
+        const m = document.getElementById('wd-method').value;
+        document.getElementById('momo-fields').style.display = m==='Momo'?'block':'none';
+        document.getElementById('bank-fields').style.display = m==='Bank'?'block':'none';
     }
 
+    async function requestWithdraw() {
+        if(gold < 20000) return alert("Cần 20,000 vàng!");
+        const name = document.getElementById('acc-name').value;
+        if(!name) return alert("Nhập tên chủ thẻ!");
+        await fetch(SCRIPT_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ action: "withdraw", userId, amount: 20000, info: "Rút tiền ("+name+")", method: document.getElementById('wd-method').value }) });
+        gold -= 20000; updateUI(); loadData();
+    }
+
+    function renderHistory(list) {
+        if(!list || list.length === 0) { document.getElementById('history-list').innerHTML = "Chưa có GD"; return; }
+        document.getElementById('history-list').innerHTML = list.map(h => `<div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px solid #333"><span>Rút 20k</span><span style="color:${h.status==='Done'?'#10b981':'#f59e0b'}">${h.status}</span></div>`).join('');
+    }
+
+    function copyRef() { navigator.clipboard.writeText(document.getElementById('ref-link').innerText); alert("Đã copy!"); }
+    
     function showTab(id, el) {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         document.getElementById('tab-' + id).classList.add('active');
