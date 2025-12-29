@@ -3,31 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>⛏ Đào Vàng Master - Telegram Mini App</title>
+    <title>⛏ Đào Vàng Master</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root { --p: #ffb703; --s: #fb8500; --bg: #f8f9fa; --txt: #023047; }
-        body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--txt); user-select: none; }
-        .header { background: var(--p); padding: 15px; text-align: center; font-weight: bold; font-size: 18px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--txt); user-select: none; }
+        .header { background: var(--p); padding: 15px; text-align: center; font-weight: bold; font-size: 18px; }
         .content { padding: 15px 15px 80px; }
         .card { background: #fff; padding: 20px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-align: center; }
-        
         .gold-val { font-size: 36px; color: var(--s); font-weight: 900; margin: 10px 0; }
-        .status-text { font-size: 14px; color: #666; margin-bottom: 10px; }
-        
         .prog-bg { background: #eee; height: 12px; border-radius: 6px; overflow: hidden; margin: 15px 0; border: 1px solid #ddd; }
-        .prog-fill { background: linear-gradient(90deg, var(--p), var(--s)); height: 100%; width: 0%; transition: width 0.2s; }
-        
-        .btn { background: var(--p); border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: bold; font-size: 16px; cursor: pointer; color: var(--txt); transition: 0.2s; box-shadow: 0 4px 0 #e6a700; }
+        .prog-fill { background: linear-gradient(90deg, var(--p), var(--s)); height: 100%; width: 0%; }
+        .btn { background: var(--p); border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 0 #e6a700; }
         .btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #e6a700; }
-        .btn:disabled { background: #ccc; box-shadow: none; color: #888; cursor: not-allowed; }
-
+        .btn:disabled { background: #ccc; box-shadow: none; color: #888; }
         .nav { position: fixed; bottom: 0; width: 100%; display: flex; background: #fff; border-top: 1px solid #eee; padding-bottom: env(safe-area-inset-bottom); }
         .nav div { flex: 1; text-align: center; padding: 15px; font-size: 12px; color: #888; font-weight: bold; }
         .nav .active { color: var(--s); border-top: 3px solid var(--s); }
-
-        input, select { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #ddd; font-size: 14px; box-sizing: border-box; }
-        label { display: block; text-align: left; font-size: 13px; font-weight: bold; color: #555; }
+        input, select { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #ddd; box-sizing: border-box; }
     </style>
 </head>
 <body>
@@ -37,66 +30,56 @@
 <div class="content">
     <div id="tab-mine" class="tab">
         <div class="card">
-            <div id="tool-name" style="font-size: 14px; background: #eee; display: inline-block; padding: 3px 10px; border-radius: 10px;">Đang tải dữ liệu...</div>
+            <div id="tool-name" style="font-size: 14px; background: #eee; display: inline-block; padding: 3px 10px; border-radius: 10px;">Đang tải...</div>
             <div id="gold" class="gold-val">0</div>
-            <div id="status" class="status-text">Sẵn sàng khai thác</div>
+            <div id="status" style="font-size:14px; color:#666">Sẵn sàng</div>
             <div class="prog-bg"><div id="prog-fill" class="prog-fill"></div></div>
             <button class="btn" id="btn-mine" onclick="startMining()">BẮT ĐẦU ĐÀO</button>
         </div>
         <div class="card">
-            <label>⏱ Cài đặt thời gian đào (giây):</label>
+            <label style="font-size:13px; font-weight:bold; display:block; text-align:left">⏱ Giây mỗi đợt:</label>
             <input type="number" id="duration" value="30" min="30">
         </div>
     </div>
 
     <div id="tab-reward" class="tab" style="display:none">
         <div class="card">
-            <h3>💎 Đổi Thưởng</h3>
-            <div style="background: #fff3cd; color: #856404; padding: 10px; border-radius: 8px; font-size: 12px; margin-bottom: 15px; text-align: left;">
-                • Tỷ lệ: 20,000 vàng = 10,000 VNĐ<br>
-                • Thời gian duyệt: Trong vòng 24h.
-            </div>
+            <h3>💎 Rút Tiền</h3>
             <form onsubmit="sendWithdraw(event)">
-                <select id="wd-method" onchange="updateWdPlaceholder()">
+                <select id="wd-method">
                     <option value="Momo">Ví Momo</option>
-                    <option value="Bank">Ngân hàng (ATM)</option>
+                    <option value="Bank">Ngân hàng</option>
                 </select>
-                <input type="text" id="wd-acc" placeholder="Số điện thoại Momo" required>
-                <input type="text" id="wd-name" placeholder="Tên chủ tài khoản (VIET HOA)" required>
-                <button type="submit" class="btn">GỬI YÊU CẦU RÚT TIỀN</button>
+                <input type="text" id="wd-acc" placeholder="Số điện thoại / STK" required>
+                <input type="text" id="wd-name" placeholder="Tên chủ tài khoản" required>
+                <button type="submit" class="btn">GỬI YÊU CẦU</button>
             </form>
         </div>
     </div>
 </div>
 
 <div class="nav">
-    <div onclick="showTab('mine')" id="n-mine" class="active">⛏ ĐÀO VÀNG</div>
-    <div onclick="showTab('reward')" id="n-reward">💎 RÚT TIỀN</div>
+    <div onclick="showTab('mine')" id="n-mine" class="active">⛏ ĐÀO</div>
+    <div onclick="showTab('reward')" id="n-reward">💎 RÚT</div>
 </div>
 
 <script>
     const tg = window.Telegram.WebApp;
     tg.expand();
 
-    // --- THÔNG TIN ĐÃ GẮN CỦA BẠN ---
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwH8_KnjdWEA-L8SGJDhYxUDBb1pIgg3EHAajvO3TSO6rQiu3OOdqEaBkniiN8wQZ1b/exec"; 
+    // LINK GOOGLE WEB APP CỦA BẠN
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwi5oG87Gsd2PQMVhiQLVnYX6pWEP3DEMXzgro8vea9DfDqbXV4dagMiNmkWyOuAavk/exec"; 
     const BOT_TOKEN = "8287339175:AAFMUbs8q8ez3Hthk7swEvpcWEEdhljhYWM";
     const CHAT_ID = "-1003681995490";
-    // ------------------------------
 
     let gold = 0;
     let level = 0;
     let isMining = false;
-    const userId = tg.initDataUnsafe?.user?.id || "guest_user";
-    const userName = tg.initDataUnsafe?.user?.username || "Ẩn danh";
+    const userId = tg.initDataUnsafe?.user?.id || "guest_test";
+    const userName = tg.initDataUnsafe?.user?.username || "Guest";
 
-    const TOOLS = [
-        { name: "Cuốc Gỗ", power: 10 },
-        { name: "Cuốc Sắt", power: 30 },
-        { name: "Máy Khoan", power: 80 }
-    ];
+    const TOOLS = [{ name: "Cuốc Gỗ", power: 10 }, { name: "Cuốc Sắt", power: 30 }];
 
-    // Load dữ liệu từ Google Sheets
     async function loadData() {
         try {
             let res = await fetch(`${SCRIPT_URL}?userId=${userId}`);
@@ -104,19 +87,15 @@
             gold = parseInt(data.gold) || 0;
             level = parseInt(data.level) || 0;
             updateUI();
-        } catch (e) {
-            console.error("Lỗi kết nối database");
-            document.getElementById("tool-name").innerText = "Lỗi kết nối!";
-        }
+        } catch (e) { document.getElementById("tool-name").innerText = "Lỗi kết nối database!"; }
     }
 
     function updateUI() {
         document.getElementById("gold").innerText = gold.toLocaleString();
-        document.getElementById("tool-name").innerText = "Công cụ: " + (TOOLS[level]?.name || TOOLS[0].name);
+        document.getElementById("tool-name").innerText = "Công cụ: " + (TOOLS[level]?.name || "Cơ bản");
     }
 
-    async function saveData() {
-        // Gửi dữ liệu ẩn danh (no-cors) để tránh lỗi bảo mật trình duyệt khi gọi Apps Script
+    function saveData() {
         fetch(SCRIPT_URL, {
             method: "POST",
             mode: "no-cors",
@@ -127,67 +106,46 @@
     function startMining() {
         if (isMining) return;
         const dur = parseInt(document.getElementById("duration").value) || 30;
-        if (dur < 30) return alert("Thời gian đào tối thiểu là 30 giây!");
-
         isMining = true;
         let elapsed = 0;
-        const btn = document.getElementById("btn-mine");
-        const prog = document.getElementById("prog-fill");
-        const status = document.getElementById("status");
+        document.getElementById("btn-mine").disabled = true;
+        document.getElementById("status").innerText = "⛏ Đang đào...";
 
-        btn.disabled = true;
-        status.innerText = "⛏ Đang đào vàng...";
-        
         let timer = setInterval(() => {
             elapsed++;
-            let p = (elapsed / dur) * 100;
-            prog.style.width = p + "%";
-            
-            // Cộng vàng mỗi giây dựa trên sức mạnh công cụ
+            document.getElementById("prog-fill").style.width = (elapsed / dur) * 100 + "%";
             gold += (TOOLS[level]?.power || 10);
             document.getElementById("gold").innerText = gold.toLocaleString();
 
             if (elapsed >= dur) {
                 clearInterval(timer);
                 isMining = false;
-                btn.disabled = false;
-                prog.style.width = "0%";
-                status.innerText = "✅ Hoàn thành! Đã lưu vàng.";
-                saveData(); // Lưu vào Google Sheets
+                document.getElementById("btn-mine").disabled = false;
+                document.getElementById("prog-fill").style.width = "0%";
+                document.getElementById("status").innerText = "✅ Đã xong!";
+                saveData(); // Lưu lên Google Sheets
                 tg.HapticFeedback.notificationOccurred('success');
             }
         }, 1000);
     }
 
-    function updateWdPlaceholder() {
-        const method = document.getElementById("wd-method").value;
-        document.getElementById("wd-acc").placeholder = method === "Momo" ? "Số điện thoại Momo" : "Số tài khoản + Tên ngân hàng";
-    }
-
     async function sendWithdraw(e) {
         e.preventDefault();
-        if (gold < 20000) return alert("Bạn cần tối thiểu 20,000 vàng!");
-
+        if (gold < 20000) return alert("Không đủ 20,000 vàng!");
         const method = document.getElementById("wd-method").value;
         const acc = document.getElementById("wd-acc").value;
         const name = document.getElementById("wd-name").value;
+        const msg = `🔔 RÚT TIỀN: ${userName}\nID: ${userId}\nLoại: ${method}\nSTK: ${acc}\nTen: ${name}\nVàng: 20k`;
 
-        const msg = `🔔 YÊU CẦU RÚT TIỀN\n━━━━━━━━━━━━\n👤 Khách: ${userName}\n🆔 ID: ${userId}\n🏦 Loại: ${method}\n💳 STK: ${acc}\n👤 Tên: ${name}\n💰 Vàng rút: 20,000\n💵 Tiền nhận: 10,000 VNĐ`;
+        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: CHAT_ID, text: msg })
+        });
 
-        try {
-            await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chat_id: CHAT_ID, text: msg })
-            });
-
-            gold -= 20000;
-            saveData();
-            alert("✅ Đã gửi yêu cầu! Admin sẽ duyệt và chuyển tiền cho bạn.");
-            showTab('mine');
-        } catch (err) {
-            alert("Lỗi khi gửi yêu cầu. Vui lòng thử lại!");
-        }
+        gold -= 20000;
+        saveData();
+        alert("Gửi yêu cầu thành công!");
     }
 
     function showTab(t) {
@@ -197,7 +155,6 @@
         document.getElementById('n-' + t).classList.add('active');
     }
 
-    // Khởi tạo game
     loadData();
 </script>
 </body>
