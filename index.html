@@ -7,7 +7,7 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root { --gold: #ffb703; --gold-dark: #fb8500; --bg: #0d1b2a; --card: #1b263b; --txt: #e0e1dd; }
-        body { margin: 0; font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--txt); overflow-x: hidden; }
+        body { margin: 0; font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--txt); overflow-x: hidden; user-select: none; }
         #server-status { position: fixed; top: 15px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); padding: 8px 20px; border-radius: 30px; font-size: 11px; z-index: 1000; border: 1px solid var(--gold); color: var(--gold); display: none; }
         .header { background: linear-gradient(180deg, var(--card) 0%, var(--bg) 100%); padding: 30px 20px; text-align: center; }
         .gold-val { font-size: 45px; font-weight: 900; color: var(--gold); text-shadow: 0 0 20px rgba(255,183,3,0.4); }
@@ -15,16 +15,17 @@
         .card { background: var(--card); border-radius: 24px; padding: 20px; margin-bottom: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); border: 1px solid #ffffff05; }
         .setting-box { background: rgba(0,0,0,0.3); padding: 12px; border-radius: 18px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .prog-container { background: #000; height: 16px; border-radius: 10px; margin: 15px 0; overflow: hidden; border: 1px solid #333; }
-        .prog-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--gold), #fff); box-shadow: 0 0 10px var(--gold); }
+        .prog-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--gold), #fff); box-shadow: 0 0 10px var(--gold); transition: width 0.3s linear; }
         .btn-main { background: linear-gradient(135deg, var(--gold), var(--gold-dark)); border: none; padding: 18px; border-radius: 18px; width: 100%; font-weight: 800; cursor: pointer; color: #000; font-size: 17px; }
-        .btn-main:disabled { opacity: 0.5; }
+        .btn-main:disabled { opacity: 0.5; cursor: not-allowed; }
         input, select { width: 100%; padding: 15px; margin: 8px 0; border-radius: 14px; border: 1px solid #333; background: #000; color: #fff; box-sizing: border-box; }
         .nav { position: fixed; bottom: 0; width: 100%; display: flex; background: var(--card); border-top: 1px solid #ffffff10; padding-bottom: env(safe-area-inset-bottom); }
         .nav-item { flex: 1; text-align: center; padding: 15px 5px; font-size: 10px; color: #64748b; font-weight: bold; }
-        .nav-item.active { color: var(--gold); border-top: 3px solid var(--gold); }
-        .tab { display: none; } .tab.active { display: block; }
+        .nav-item.active { color: var(--gold); border-top: 3px solid var(--gold); background: rgba(255,183,3,0.05); }
+        .tab { display: none; } .tab.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .shop-item { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 15px; margin-bottom: 10px; }
-        .rank-row { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #ffffff05; }
+        .rank-row { display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #ffffff05; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -41,9 +42,9 @@
         <div class="card">
             <div class="setting-box">
                 <span>TREO MÁY (GIÂY):</span>
-                <input type="number" id="duration" value="30" min="30" style="width: 70px; text-align: center;">
+                <input type="number" id="duration" value="30" min="30" style="width: 70px; text-align: center; margin: 0; padding: 8px; border: 1px solid var(--gold);">
             </div>
-            <div id="tool-name" style="text-align: center; color: var(--gold); font-weight: bold;">CUỐC GỖ</div>
+            <div id="tool-name" style="text-align: center; color: var(--gold); font-weight: bold; font-size: 14px;">CUỐC GỖ</div>
             <div id="mining-status" style="text-align: center; height: 30px; margin-top: 10px; font-weight: bold; color: #10b981;"></div>
             <div class="prog-container"><div class="prog-bar" id="prog"></div></div>
             <button class="btn-main" id="btn-mine" onclick="startMining()">⛏ BẮT ĐẦU ĐÀO</button>
@@ -52,22 +53,23 @@
 
     <div id="tab-shop" class="tab">
         <div class="card">
-            <h3>🛒 Cửa Hàng</h3>
-            <div class="shop-item"><div><b>Cuốc Sắt</b><br><small>40 vàng/s</small></div><button onclick="buyTool(1, 50000)" class="btn-main" style="width:80px; padding:10px" id="b1">50K</button></div>
-            <div class="shop-item"><div><b>Máy Khoan</b><br><small>120 vàng/s</small></div><button onclick="buyTool(2, 200000)" class="btn-main" style="width:80px; padding:10px" id="b2">200K</button></div>
+            <h3 style="margin-top:0">🛒 Cửa Hàng</h3>
+            <div class="shop-item"><div><b>Cuốc Sắt</b><br><small>+40 vàng/s</small></div><button onclick="buyTool(1, 50000)" class="btn-main" style="width:80px; padding:10px" id="b1">50K</button></div>
+            <div class="shop-item"><div><b>Máy Khoan</b><br><small>+120 vàng/s</small></div><button onclick="buyTool(2, 200000)" class="btn-main" style="width:80px; padding:10px" id="b2">200K</button></div>
         </div>
     </div>
 
     <div id="tab-rank" class="tab">
-        <div class="card"><h3>🏆 Top Đại Gia</h3><div id="rank-list">Đang tải...</div></div>
+        <div class="card"><h3>🏆 Top 10 Đại Gia</h3><div id="rank-list">Đang tải bảng xếp hạng...</div></div>
     </div>
 
     <div id="tab-friends" class="tab">
         <div class="card">
             <h3>👥 Bạn Bè</h3>
-            <div id="ref-link" style="font-size:11px; color:var(--gold); border:1px dashed #555; padding:10px; margin-bottom:10px; word-break:break-all"></div>
-            <button class="btn-main" onclick="copyRef()">COPY LINK MỜI</button>
-            <p>Đã mời: <span id="ref-count" style="color:var(--gold)">0</span> bạn</p>
+            <p style="font-size: 13px; color: #94a3b8;">Nhận ngay <b style="color:var(--gold)">5,000 vàng</b> khi mời 1 bạn.</p>
+            <div id="ref-link" style="font-size:11px; color:var(--gold); border:1px dashed #555; padding:10px; word-break:break-all; background: #000; text-align: center;"></div>
+            <button class="btn-main" onclick="copyRef()" style="margin-top:10px">COPY LINK MỜI</button>
+            <p style="margin-top:15px">Bạn bè đã mời: <span id="ref-count" style="color:var(--gold); font-weight:bold;">0</span></p>
         </div>
     </div>
 
@@ -75,12 +77,12 @@
         <div class="card">
             <h3>💰 Rút Tiền</h3>
             <select id="wd-method" onchange="toggleWd()"><option value="Momo">Ví Momo</option><option value="Bank">Ngân hàng</option></select>
-            <div id="momo-fields"><input type="text" id="momo-num" placeholder="Số Momo"></div>
+            <div id="momo-fields"><input type="text" id="momo-num" placeholder="Số điện thoại Momo"></div>
             <div id="bank-fields" style="display:none"><input type="text" id="bank-name" placeholder="Tên Ngân hàng"><input type="text" id="bank-num" placeholder="Số tài khoản"></div>
             <input type="text" id="acc-name" placeholder="Tên chủ tài khoản (VIẾT HOA)">
-            <button class="btn-main" onclick="requestWithdraw()">RÚT 20,000 VÀNG</button>
+            <button class="btn-main" onclick="requestWithdraw()">GỬI YÊU CẦU RÚT 20K VÀNG</button>
         </div>
-        <div class="card"><h4>📜 Lịch sử</h4><div id="history-list"></div></div>
+        <div class="card"><h4>📜 Lịch sử rút tiền</h4><div id="history-list"></div></div>
     </div>
 </div>
 
@@ -94,18 +96,27 @@
 
 <script>
     const tg = window.Telegram.WebApp;
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw1JTdRmVIifyzFNjVTewMX2MVJftRWJofUnEiuldBiaqc3WwP0pf4lp-MShOx3P7be/exec";
-    const userId = tg.initDataUnsafe?.user?.id || "test_user";
+    tg.expand();
+    
+    // ĐÃ CẬP NHẬT LINK EXEC CỦA BẠN
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz3_5RmFs0zzKXlc83p6QqzFUueq7kag6cTz45DXTVipvgiKTOoLsjOCLh9g4AIl4d8/exec";
+    
+    const userId = tg.initDataUnsafe?.user?.id || "dev_user";
     const userName = tg.initDataUnsafe?.user?.username || "Guest";
     const refBy = tg.initDataUnsafe?.start_param || "";
 
     let gold = 0, level = 0, isMining = false;
     const TOOLS = [{name:"CUỐC GỖ", power:10}, {name:"CUỐC SẮT", power:40}, {name:"MÁY KHOAN", power:120}];
 
-    function notify(t, b=true){ const s=document.getElementById('server-status'); s.style.display='block'; s.innerText=t; if(!b) setTimeout(()=>s.style.display='none', 2000); }
+    function notify(t, b=true){ 
+        const s = document.getElementById('server-status'); 
+        s.style.display='block'; 
+        s.innerText = t; 
+        if(!b) setTimeout(()=>s.style.display='none', 2500); 
+    }
 
     async function loadData() {
-        notify("Kết nối Server...");
+        notify("Đang đồng bộ...");
         try {
             const r = await fetch(`${SCRIPT_URL}?action=load&userId=${userId}`);
             const d = await r.json();
@@ -114,8 +125,8 @@
             renderRank(d.ranks);
             renderHistory(d.history);
             updateUI();
-            notify("Kết nối thành công", false);
-        } catch(e){ notify("Lỗi kết nối!", false); }
+            notify("Đã đồng bộ thành công ✅", false);
+        } catch(e){ notify("Lỗi máy chủ!", false); }
     }
 
     function updateUI() {
@@ -123,28 +134,32 @@
         document.getElementById('user-display').innerText = "@" + userName;
         document.getElementById('tool-name').innerText = "CÔNG CỤ: " + TOOLS[level].name;
         document.getElementById('ref-link').innerText = `https://t.me/daovang51_bot?start=${userId}`;
-        if(level>=1) { document.getElementById('b1').innerText="OK"; document.getElementById('b1').disabled=true; }
-        if(level>=2) { document.getElementById('b2').innerText="OK"; document.getElementById('b2').disabled=true; }
+        if(level>=1) { document.getElementById('b1').innerText="ĐÃ CÓ"; document.getElementById('b1').disabled=true; }
+        if(level>=2) { document.getElementById('b2').innerText="ĐÃ CÓ"; document.getElementById('b2').disabled=true; }
     }
 
     function startMining() {
         if(isMining) return;
-        const dur = Math.max(30, parseInt(document.getElementById('duration').value) || 30);
+        const durInput = document.getElementById('duration').value;
+        const dur = Math.max(30, parseInt(durInput) || 30);
         isMining = true;
         let elapsed = 0;
-        document.getElementById('btn-mine').disabled = true;
+        const btn = document.getElementById('btn-mine');
+        btn.disabled = true;
+        
         let timer = setInterval(() => {
             elapsed++;
-            let earned = elapsed * TOOLS[level].power;
-            document.getElementById('mining-status').innerText = `⛏ Đang đào: +${earned.toLocaleString()} vàng`;
+            let currentEarned = elapsed * TOOLS[level].power;
+            document.getElementById('mining-status').innerText = `⛏ Đang đào: +${currentEarned.toLocaleString()} vàng`;
             document.getElementById('prog').style.width = (elapsed/dur)*100+"%";
+            
             if(elapsed >= dur) {
                 clearInterval(timer);
                 isMining = false;
-                document.getElementById('btn-mine').disabled = false;
+                btn.disabled = false;
                 document.getElementById('prog').style.width = "0%";
-                gold += earned;
-                document.getElementById('mining-status').innerText = `✅ Đã nhận +${earned.toLocaleString()} vàng!`;
+                gold += (dur * TOOLS[level].power);
+                document.getElementById('mining-status').innerText = `✅ Nhận +${(dur * TOOLS[level].power).toLocaleString()} vàng!`;
                 updateUI();
                 saveData();
                 tg.HapticFeedback.notificationOccurred('success');
@@ -153,11 +168,15 @@
     }
 
     function saveData() {
-        fetch(SCRIPT_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ action: "save", userId, gold, level, userName, refBy }) });
+        fetch(SCRIPT_URL, { 
+            method: "POST", 
+            mode: "no-cors", 
+            body: JSON.stringify({ action: "save", userId, gold, level, userName, refBy }) 
+        });
     }
 
     function buyTool(idx, p) {
-        if(gold < p) return alert("Không đủ vàng!");
+        if(gold < p) return alert("Bạn không đủ vàng!");
         gold -= p; level = idx; updateUI(); saveData(); alert("Nâng cấp thành công!");
     }
 
@@ -170,31 +189,47 @@
     function requestWithdraw() {
         if(gold < 20000) return alert("Cần tối thiểu 20,000 vàng!");
         const name = document.getElementById('acc-name').value;
-        if(!name) return alert("Nhập tên chủ thẻ!");
-        notify("Đang gửi...");
-        fetch(SCRIPT_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ action: "withdraw", userId, amount: 20000, info: "Rút tiền ("+name+")", method: document.getElementById('wd-method').value }) })
-        .then(() => { gold -= 20000; updateUI(); alert("Gửi yêu cầu thành công!"); loadData(); });
+        if(!name) return alert("Nhập tên tài khoản nhận!");
+        notify("Đang gửi yêu cầu...");
+        fetch(SCRIPT_URL, { 
+            method: "POST", 
+            mode: "no-cors", 
+            body: JSON.stringify({ action: "withdraw", userId, amount: 20000, info: "Rút ("+name+")", method: document.getElementById('wd-method').value }) 
+        })
+        .then(() => { 
+            gold -= 20000; 
+            updateUI(); 
+            alert("Yêu cầu rút đã được gửi thành công!"); 
+            loadData(); 
+        });
     }
 
     function renderRank(ranks) {
-        if(!ranks) return;
+        if(!ranks || ranks.length === 0) return;
         document.getElementById('rank-list').innerHTML = ranks.map((r, i) => `<div class="rank-row"><span>${i+1}. ${r.name}</span><b>${r.gold.toLocaleString()}</b></div>`).join('');
     }
 
     function renderHistory(h) {
-        if(!h || h.length === 0) return document.getElementById('history-list').innerText = "Chưa có GD";
-        document.getElementById('history-list').innerHTML = h.map(i => `<div class="rank-row"><span>Rút 20k</span><span style="color:orange">${i.status}</span></div>`).join('');
+        const histDiv = document.getElementById('history-list');
+        if(!h || h.length === 0) return histDiv.innerText = "Chưa có giao dịch.";
+        histDiv.innerHTML = h.map(i => `<div class="rank-row"><span>Rút 20k</span><span style="color:orange">${i.status}</span></div>`).join('');
     }
 
-    function copyRef() { navigator.clipboard.writeText(document.getElementById('ref-link').innerText); alert("Đã copy!"); }
+    function copyRef() {
+        const link = document.getElementById('ref-link').innerText;
+        const el = document.createElement('textarea'); el.value = link; document.body.appendChild(el);
+        el.select(); document.execCommand('copy'); document.body.removeChild(el);
+        alert("Đã copy link mời!");
+    }
+
     function showTab(id, el) {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         document.getElementById('tab-' + id).classList.add('active');
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         el.classList.add('active');
     }
+
     loadData();
 </script>
 </body>
 </html>
-
