@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GOLD MINER PRO V14.7</title>
+    <title>GOLD MINER PRO V14.9</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root { --gold: #ffca28; --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #e6edf3; --success: #238636; }
-        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); user-select: none; }
+        body { margin: 0; font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--text); user-select: none; }
         
         #loader { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; }
         .spinner { width: 40px; height: 40px; border: 4px solid #333; border-top: 4px solid var(--gold); border-radius: 50%; animation: spin 1s linear infinite; }
@@ -16,13 +16,13 @@
         #toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--success); color: white; padding: 12px 25px; border-radius: 12px; display: none; z-index: 10001; font-weight: bold; width: 80%; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
 
         .header { background: #1c2128; padding: 15px; text-align: center; border-bottom: 2px solid var(--gold); position: sticky; top: 0; z-index: 999; }
-        .gold-ui { font-size: 32px; font-weight: 900; color: var(--gold); text-shadow: 0 0 10px rgba(255,202,40,0.3); }
+        .gold-ui { font-size: 32px; font-weight: 900; color: var(--gold); }
 
-        .tab { display: none; padding: 15px 15px 100px 15px; animation: fadeIn 0.4s ease; }
+        .tab { display: none; padding: 15px 15px 100px 15px; animation: fadeIn 0.3s ease; }
         .tab.active { display: block !important; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .card { background: var(--card); border-radius: 20px; padding: 20px; margin-bottom: 15px; border: 1px solid var(--border); position: relative; }
+        .card { background: var(--card); border-radius: 20px; padding: 18px; margin-bottom: 15px; border: 1px solid var(--border); }
 
         /* Miner Visuals */
         .miner-stage { height: 160px; display: flex; align-items: center; justify-content: center; position: relative; }
@@ -30,42 +30,37 @@
         .axe-hand { font-size: 45px; position: absolute; top: 25px; right: 32%; transform-origin: bottom left; z-index: 3; }
         .mining-active { animation: swingAxe 0.4s infinite; }
         @keyframes swingAxe { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(-45deg); } }
-
         .particle { position: absolute; color: var(--gold); font-size: 20px; pointer-events: none; animation: popUp 0.8s forwards; }
         @keyframes popUp { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-120px); opacity: 0; } }
 
-        /* BUTTON 3D - KHÔI PHỤC */
+        /* BUTTON 3D */
         .btn-3d { 
             background: var(--gold); border: none; padding: 16px; border-radius: 14px; width: 100%; 
-            font-weight: bold; color: #000; cursor: pointer; box-shadow: 0 5px 0 #b38600; 
-            font-size: 16px; margin: 10px 0; transition: all 0.1s; display: block;
+            font-weight: bold; color: #000; box-shadow: 0 5px 0 #b38600; 
+            font-size: 16px; margin: 10px 0; transition: all 0.1s; display: block; text-decoration: none; text-align: center;
         }
         .btn-3d:active { transform: translateY(3px); box-shadow: 0 2px 0 #b38600; }
-        .btn-3d:disabled { background: #444; box-shadow: none; color: #888; transform: none; }
+        .btn-3d:disabled { background: #444; box-shadow: none; color: #888; }
 
-        /* CHÚ THÍCH & LƯU Ý - MỚI */
-        .note-container { 
-            background: rgba(0,0,0,0.3); border-radius: 12px; border: 1px dashed #555; 
-            padding: 12px; margin-top: 15px; text-align: left; 
-        }
-        .note-title { color: var(--gold); font-weight: bold; font-size: 13px; margin-bottom: 5px; display: flex; align-items: center; }
-        .note-item { font-size: 12px; color: #8b949e; line-height: 1.6; display: block; }
+        /* KHUNG CHÚ THÍCH */
+        .note-box { background: rgba(0,0,0,0.2); border: 1px dashed #444; border-radius: 12px; padding: 12px; margin-top: 10px; }
+        .note-item { font-size: 11px; color: #8b949e; display: block; line-height: 1.5; margin-bottom: 3px; }
+        .note-title { color: var(--gold); font-size: 12px; font-weight: bold; margin-bottom: 5px; display: block; }
 
         .progress-container { background: #000; height: 14px; border-radius: 7px; margin: 15px 0; border: 1px solid var(--border); overflow: hidden; }
-        .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #ffca28, #ffd54f); transition: width 0.2s linear; }
+        .progress-bar { height: 100%; width: 0%; background: var(--gold); transition: width 0.2s linear; }
 
         .nav { position: fixed; bottom: 0; width: 100%; display: flex; background: #161b22; border-top: 1px solid var(--border); padding-bottom: env(safe-area-inset-bottom); z-index: 999; }
         .nav-item { flex: 1; text-align: center; padding: 16px 5px; font-size: 11px; color: #8b949e; }
         .nav-item.active { color: var(--gold); font-weight: bold; border-top: 2px solid var(--gold); background: rgba(255,202,40,0.05); }
 
-        .rank-row { display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #222; align-items: center; }
-        .shop-row { background: #0d1117; padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); }
+        .history-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #222; font-size: 12px; }
         input, select { width: 100%; padding: 14px; margin: 8px 0; border-radius: 12px; background: #0d1117; color: #fff; border: 1px solid var(--border); box-sizing: border-box; }
     </style>
 </head>
 <body>
 
-<div id="loader"><div class="spinner"></div><p style="margin-top:15px; font-weight:bold;">ĐANG ĐỒNG BỘ...</p></div>
+<div id="loader"><div class="spinner"></div><p style="margin-top:15px; font-weight:bold;">ĐANG ĐỒNG BỘ DỮ LIỆU...</p></div>
 <div id="toast"></div>
 
 <div class="header">
@@ -74,43 +69,39 @@
 </div>
 
 <div id="tab-mine" class="tab active">
-    <div class="card" id="checkin-box" style="display:none;">
-        <button class="btn-3d" style="background:var(--success); box-shadow:0 5px 0 #1a6328;" onclick="doCheckin()">🎁 ĐIỂM DANH (+2,000 VÀNG)</button>
-    </div>
-    
+    <div id="checkin-area"></div>
     <div class="card" style="text-align:center;">
-        <div id="mining-status-text" style="font-weight:bold; color:var(--gold); font-size:22px; height:32px; margin-bottom:5px;">
+        <div id="mining-status" style="font-weight:bold; color:var(--gold); font-size:22px; height:32px;">
             <span id="live-gold-box" style="display:none;">+ <span id="live-val">0</span> 🟡</span>
         </div>
-        
         <div class="miner-stage">
             <span class="miner-man">👨‍🌾</span>
             <span id="axe-img" class="axe-hand">🪵</span>
         </div>
-
-        <h2 id="tool-txt" style="color:var(--gold); margin:8px 0; text-transform: uppercase; font-size: 18px;">ĐANG TẢI...</h2>
-        
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
-            <span style="font-size:14px; font-weight: bold;">HẸN GIỜ (GIÂY):</span>
-            <input type="number" id="mine-duration" value="30" style="width:80px; text-align:center; margin:0; padding:10px;">
+        <h2 id="tool-txt" style="color:var(--gold); margin:10px 0; font-size: 18px;">ĐANG TẢI...</h2>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span>GIÂY ĐÀO:</span>
+            <input type="number" id="mine-duration" value="30" style="width:80px; text-align:center; margin:0;">
         </div>
-
         <div class="progress-container"><div class="progress-bar" id="prog-fill"></div></div>
-        <button class="btn-3d" id="btn-start" onclick="startMining()">⛏ BẮT ĐẦU KHAI THÁC</button>
-
-        <div class="note-container">
-            <div class="note-title">⚠️ LƯU Ý QUAN TRỌNG:</div>
-            <span class="note-item">• <b>Treo máy:</b> Bạn có thể đóng App, hệ thống vẫn đào đủ thời gian.</span>
-            <span class="note-item">• <b>Nâng cấp:</b> Cuốc càng xịn, số vàng nhận được mỗi giây càng cao.</span>
-            <span class="note-item">• <b>Thanh toán:</b> Rút tiền sẽ được duyệt trong vòng 24h.</span>
+        <button class="btn-3d" id="btn-start" onclick="startMining()">⛏ BẮT ĐẦU ĐÀO</button>
+        <div class="note-box">
+            <span class="note-title">💡 CHÚ THÍCH ĐÀO</span>
+            <span class="note-item">• Hệ thống đào offline 100%, có thể tắt App.</span>
+            <span class="note-item">• Cấp cuốc càng cao, vàng mỗi giây càng nhiều.</span>
         </div>
     </div>
 </div>
 
 <div id="tab-shop" class="tab">
     <div class="card">
-        <h3 style="margin-top:0; color:var(--gold);">🛒 CỬA HÀNG CUỐC</h3>
+        <h3 style="margin-top:0;">🛒 CỬA HÀNG</h3>
         <div id="shop-list"></div>
+        <div class="note-box">
+            <span class="note-title">🛠 CHÚ THÍCH SHOP</span>
+            <span class="note-item">• Cuốc mới sẽ thay thế cuốc cũ đang dùng.</span>
+            <span class="note-item">• Vàng mua cuốc không được hoàn lại.</span>
+        </div>
     </div>
 </div>
 
@@ -118,14 +109,23 @@
     <div class="card" style="text-align:center;">
         <h3>🎡 VÒNG QUAY MAY MẮN</h3>
         <canvas id="wheel" width="300" height="300" style="width:260px; border-radius:50%; transition:4s cubic-bezier(0.1,0,0.1,1); border:6px solid #1c2128;"></canvas>
-        <p style="font-size:18px; margin-top:15px;">Lượt quay: <b id="spin-qty" style="color:var(--gold);">0</b></p>
-        <button class="btn-3d" onclick="spinNow()">QUAY NGAY</button>
+        <p style="font-size: 18px;">Số lượt hiện có: <b id="spin-qty" style="color:var(--gold);">0</b></p>
+        <button class="btn-3d" id="btn-spin-action" onclick="spinNow()">QUAY NGAY</button>
+        <div class="note-box">
+            <span class="note-title">🍀 LƯU Ý VÒNG QUAY</span>
+            <span class="note-item">• Lượt quay được lưu trữ trên hệ thống.</span>
+            <span class="note-item">• Load lại trang sẽ không làm mất lượt quay.</span>
+        </div>
     </div>
 </div>
 
 <div id="tab-task" class="tab">
     <div class="card">
-        <h3>🏆 BẢNG XẾP HẠNG</h3>
+        <h3>👥 MỜI BẠN BÈ</h3>
+        <button class="btn-3d" onclick="invite()">🔗 GỬI LINK MỜI (+5K VÀNG)</button>
+    </div>
+    <div class="card">
+        <h3>🏆 TOP ĐẠI GIA</h3>
         <div id="leaderboard"></div>
     </div>
 </div>
@@ -133,11 +133,20 @@
 <div id="tab-wallet" class="tab">
     <div class="card">
         <h3>💰 RÚT TIỀN</h3>
-        <input type="number" id="wd-gold" placeholder="Số vàng">
-        <select id="wd-type"><option value="Momo">MoMo</option><option value="Bank">Ngân hàng</option></select>
-        <input type="text" id="wd-info" placeholder="Số tài khoản / Số MoMo">
+        <input type="number" id="wd-gold" placeholder="Số vàng muốn rút">
+        <select id="wd-type"><option value="Momo">Ví MoMo</option><option value="Bank">Ngân hàng</option></select>
+        <input type="text" id="wd-info" placeholder="Số tài khoản / Số điện thoại">
         <input type="text" id="wd-name" placeholder="Tên chủ tài khoản">
         <button class="btn-3d" onclick="sendWd()">XÁC NHẬN RÚT</button>
+        <div class="note-box">
+            <span class="note-title">💳 LƯU Ý THANH TOÁN</span>
+            <span class="note-item">• Rút tối thiểu: 20,000 vàng.</span>
+            <span class="note-item">• Thời gian duyệt: 1-24 giờ.</span>
+        </div>
+    </div>
+    <div class="card">
+        <h3>📜 LỊCH SỬ GIAO DỊCH</h3>
+        <div id="history-list">Đang tải lịch sử...</div>
     </div>
 </div>
 
@@ -145,13 +154,12 @@
     <div class="nav-item active" onclick="nav('tab-mine', this)">⛏ ĐÀO</div>
     <div class="nav-item" onclick="nav('tab-shop', this)">🛒 SHOP</div>
     <div class="nav-item" onclick="nav('tab-spin', this)">🎡 QUAY</div>
-    <div class="nav-item" onclick="nav('tab-task', this)">🏆 TOP</div>
+    <div class="nav-item" onclick="nav('tab-task', this)">📋 NHIỆM VỤ</div>
     <div class="nav-item" onclick="nav('tab-wallet', this)">💰 VÍ</div>
 </nav>
 
 <script>
     const tg = window.Telegram.WebApp;
-    // URL KHÔNG ĐỔI
     const API = "https://script.google.com/macros/s/AKfycbz3_5RmFs0zzKXlc83p6QqzFUueq7kag6cTz45DXTVipvgiKTOoLsjOCLh9g4AIl4d8/exec";
     const uId = tg.initDataUnsafe?.user?.id || "dev_user";
     const uName = tg.initDataUnsafe?.user?.username || "Thợ Mỏ";
@@ -167,10 +175,17 @@
         try {
             const r = await fetch(`${API}?userId=${uId}`);
             const d = await r.json();
-            gold = d.gold; level = d.level; spins = d.extraSpin;
+            gold = d.gold; level = d.level; 
+            spins = d.extraSpin;
+
+            if (new Date(d.lastCheckIn).toDateString() !== new Date().toDateString()) {
+                document.getElementById('checkin-area').innerHTML = `<div class="card"><button class="btn-3d" style="background:var(--success);box-shadow:0 5px 0 #1a6328;" onclick="doCheckin()">🎁 ĐIỂM DANH (+2,000 VÀNG)</button></div>`;
+            }
+
             checkOffline(d);
-            if (new Date(d.lastCheckIn).toDateString() !== new Date().toDateString()) document.getElementById('checkin-box').style.display='block';
-            renderRanks(d.ranks); ui(); drawWheel();
+            renderRanks(d.ranks);
+            renderHistory(d.history);
+            ui(); drawWheel();
             document.getElementById('loader').style.display = 'none';
         } catch(e) { console.log(e); }
     }
@@ -182,12 +197,39 @@
         document.getElementById('spin-qty').innerText = spins;
         document.getElementById('axe-img').innerText = TOOLS[level].i;
         document.getElementById('shop-list').innerHTML = TOOLS.map((t,idx)=>`
-            <div class="shop-row">
+            <div style="display:flex; justify-content:space-between; align-items:center; background:#0d1117; padding:12px; border-radius:15px; margin-bottom:10px; border:1px solid #333;">
                 <div><b>${t.i} ${t.n}</b><br><small style="color:#8b949e">+${t.p}/s</small></div>
-                <button class="btn-3d" style="width:105px;margin:0;padding:10px;font-size:12px;" ${level>=idx?'disabled':''} onclick="buy(${idx},${t.c})">
-                    ${level>=idx?'ĐÃ CÓ':t.c.toLocaleString()}
+                <button class="btn-3d" style="width:100px;margin:0;padding:8px;font-size:12px;" ${level>=idx?'disabled':''} onclick="buy(${idx},${t.c})">
+                    ${level>=idx?'SỞ HỮU':t.c.toLocaleString()}
                 </button>
             </div>`).join('');
+    }
+
+    function renderHistory(h) {
+        if(!h || h.length === 0) { document.getElementById('history-list').innerText = "Chưa có giao dịch."; return; }
+        document.getElementById('history-list').innerHTML = h.map(x => `
+            <div class="history-item">
+                <span>Rút ${x.amount.toLocaleString()}</span>
+                <b style="color:${x.status==='Thành công'?'#238636':'orange'}">${x.status}</b>
+            </div>`).join('');
+    }
+
+    function spinNow() {
+        if(spins <= 0) return toast("Bạn đã hết lượt quay!");
+        spins--; ui(); 
+        fetch(API,{method:"POST",mode:"no-cors",body:JSON.stringify({action:"update_feature",type:"spin",userId:uId,gold:gold,extraSpin:spins})});
+        
+        let d = 1800 + Math.random()*360;
+        document.getElementById('wheel').style.transform = `rotate(${d}deg)`;
+        document.getElementById('btn-spin-action').disabled = true;
+        
+        setTimeout(() => {
+            let prizes = [1000, 5000, 0, 2000, 10000, 500];
+            let win = prizes[Math.floor((360-(d%360))/60)%6];
+            gold += win; ui(); save();
+            document.getElementById('btn-spin-action').disabled = false;
+            toast(win > 0 ? `Chúc mừng nhận ${win} vàng!` : "Mất lượt rồi!");
+        }, 4000);
     }
 
     function checkOffline(d) {
@@ -195,7 +237,7 @@
             let passed = Math.floor((Date.now() - d.lastMineStart)/1000);
             if(passed >= d.mineDuration) {
                 let g = d.mineDuration * TOOLS[d.level].p;
-                gold += g; save(); toast(`+${g.toLocaleString()} Vàng (Offline)`);
+                gold += g; save(); toast(`Vàng Offline: +${g.toLocaleString()}`);
                 fetch(API,{method:"POST",mode:"no-cors",body:JSON.stringify({action:"start_mine",userId:uId,startTime:0,duration:0})});
             } else { startMining(passed, d.mineDuration); }
         }
@@ -222,7 +264,7 @@
                 document.getElementById('live-gold-box').style.display = 'none';
                 gold += (dur * TOOLS[level].p); ui(); save();
                 fetch(API,{method:"POST",mode:"no-cors",body:JSON.stringify({action:"start_mine",userId:uId,startTime:0,duration:0})});
-                toast("Đã đào xong!");
+                toast("Đã xong!");
             }
         }, 1000);
     }
@@ -239,7 +281,9 @@
     function renderRanks(ranks) {
         document.getElementById('leaderboard').innerHTML = ranks.map((r,i) => {
             let m = i===0?'🥇':(i===1?'🥈':(i===2?'🥉':''));
-            return `<div class="rank-row"><span><b>${m} ${i+1}.</b> ${r.name}</span><b>${r.gold.toLocaleString()}</b></div>`;
+            return `<div style="display:flex;justify-content:space-between;padding:12px;border-bottom:1px solid #222;">
+                <span>${m} ${i+1}. ${r.name}</span><b>${r.gold.toLocaleString()}</b>
+            </div>`;
         }).join('');
     }
 
@@ -247,9 +291,10 @@
     function buy(idx, cost) { if(gold < cost) return toast("Không đủ vàng!"); gold -= cost; level = idx; ui(); save(); }
     function save() { fetch(API,{method:"POST",mode:"no-cors",body:JSON.stringify({action:"save",userId:uId,gold:gold,level:level,userName:uName})}); }
     function toast(m) { const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block'; setTimeout(()=>t.style.display='none', 3000); }
-    function spinNow() { if(spins<=0) return toast("Hết lượt!"); spins--; ui(); let d = 1800 + Math.random()*360; document.getElementById('wheel').style.transform = `rotate(${d}deg)`; setTimeout(()=>{ let prizes = [1000, 5000, 0, 2000, 10000, 500]; gold += prizes[Math.floor((360-(d%360))/60)%6]; ui(); save(); }, 4000); }
-    function drawWheel() { const ctx = document.getElementById('wheel').getContext('2d'); const p = ["1K","5K","0","2K","10K","500"]; const c = ["#ffca28","#1c2128","#444","#ffca28","#1c2128","#ffca28"]; for(let i=0; i<6; i++) { ctx.fillStyle = c[i]; ctx.beginPath(); ctx.moveTo(150,150); ctx.arc(150,150,140,i*Math.PI/3,(i+1)*Math.PI/3); ctx.fill(); ctx.fillStyle="#fff"; ctx.font="bold 16px sans-serif"; ctx.save(); ctx.translate(150,150); ctx.rotate(i*Math.PI/3 + Math.PI/6); ctx.fillText(p[i], 85, 8); ctx.restore(); } }
-    function sendWd() { let amt = parseInt(document.getElementById('wd-gold').value); if(gold < amt) return toast("Không đủ vàng!"); fetch(API,{method:"POST",mode:"no-cors",body:JSON.stringify({action:"withdraw",userId:uId,amount:amt,method:document.getElementById('wd-type').value,info:document.getElementById('wd-info').value+" ("+document.getElementById('wd-name').value+")"})}); gold -= amt; ui(); toast("Yêu cầu thành công!"); }
+    function invite() { tg.openTelegramLink(`https://t.me/share/url?url=https://t.me/daovang51_bot/start?startapp=${uId}&text=Đào vàng cùng mình nhé!`); }
+    function drawWheel() { const ctx = document.getElementById('wheel').getContext('2d'); const p = ["1K","5K","0","2K","10K","500"]; const c = ["#ffca28","#1c2128","#444","#ffca28","#1c2128","#ffca28"]; for(let i=0; i<6; i++) { ctx.fillStyle = c[i]; ctx.beginPath(); ctx.moveTo(150,150); ctx.arc(150,150,140,i*Math.PI/3,(i+1)*Math.PI/3); ctx.fill(); ctx.fillStyle="#fff"; ctx.save(); ctx.translate(150,150); ctx.rotate(i*Math.PI/3 + Math.PI/6); ctx.fillText(p[i], 85, 8); ctx.restore(); } }
+    function doCheckin() { gold+=2000; document.getElementById('checkin-area').innerHTML=''; ui(); fetch(API,{method:"POST",mode:"no-cors",body:JSON.stringify({action:"update_feature",type:"checkin",userId:uId,gold:gold})}); toast("Điểm danh thành công!"); }
+    function sendWd() { let amt = parseInt(document.getElementById('wd-gold').value); if(gold < amt) return toast("Vàng không đủ!"); fetch(API,{method:"POST",mode:"no-cors",body:JSON.stringify({action:"withdraw",userId:uId,amount:amt,method:document.getElementById('wd-type').value,info:document.getElementById('wd-info').value+" ("+document.getElementById('wd-name').value+")"})}); gold -= amt; ui(); toast("Đã gửi yêu cầu!"); }
 
     init();
     tg.expand();
